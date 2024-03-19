@@ -5,6 +5,7 @@ import com.archive.ruleservice.model.LoginRequest;
 import com.archive.ruleservice.model.UserRoles;
 import com.archive.ruleservice.config.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/login")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
@@ -50,7 +52,7 @@ public class AuthenticationController {
 
             return ResponseEntity.ok(token);
         } catch (AuthenticationException e) {
-            System.out.println(e);
+            log.error("Exception occurred while creating jwt for user {}", e.getMessage());
             return new ResponseEntity<>("Unauthorised", HttpStatus.UNAUTHORIZED);
         }
     }

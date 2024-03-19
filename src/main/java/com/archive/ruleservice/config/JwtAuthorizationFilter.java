@@ -1,7 +1,8 @@
 package com.archive.ruleservice.config;
 
-import com.archive.ruleservice.service.impl.UserDetailsService;
+import com.archive.ruleservice.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +18,11 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
 
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,7 +36,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in the security context", ex);
+            log.error("Could not set user authentication in the security context", ex);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
         }
 
         filterChain.doFilter(request, response);

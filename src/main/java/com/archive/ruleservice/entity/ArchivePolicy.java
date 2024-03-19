@@ -28,8 +28,8 @@ public class ArchivePolicy {
     private String password;
     @Column(name = "tablename", nullable=false)
     String tableName;
-    @Column(name = "archiveDataBeforeInDays", nullable=false)
+    @Column(name = "archivedatabeforeindays", nullable=false)
     private Long archiveDataBeforeInDays;
-    @Column(name = "retainArchivedDataForInDays", nullable=false)
+    @Column(name = "retainarchiveddataforindays", nullable=false)
     private Long retainArchivedDataForInDays;
 }
