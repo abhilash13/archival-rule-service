@@ -2,6 +2,8 @@ package com.archive.ruleservice.config;
 
 import com.archive.ruleservice.model.UserRoles;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -9,9 +11,12 @@ import java.util.Date;
 import java.util.List;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
-    private final String secretKey = "SecretKeyGenerator";
-    private final long tokenValidity = 3600000;
+    @Value("${jwt.secret:SecretKeyGenerator}")
+    private String secretKey;
+    @Value("${jwt.validity:600000}")
+    private long tokenValidity;
 
     public String generateToken(UserDetails userDetails, List<UserRoles> roles) {
         Date now = new Date();
@@ -26,10 +31,10 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return true;
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException
-                 | IllegalArgumentException ex) {
+            var claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+            return !claims.getExpiration().before(new Date());
+        } catch (SignatureException ex) {
+            log.error("Exception occurred while validating token {}", ex.getMessage());
             return false;
         }
     }

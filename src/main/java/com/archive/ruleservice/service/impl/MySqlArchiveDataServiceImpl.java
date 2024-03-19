@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.sql.SQLException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
 
     @Value("${target.datasource.url:}")
@@ -51,11 +53,12 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
             System.out.println("Data transferred successfully!");
 
         } catch (SQLException e) {
-            // Handle potential errors
-            e.printStackTrace();
+            log.error("Exception occurred while archiving data to remote DB " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            targetJdbcConnector.closeConnection();
         }
 
-        targetJdbcConnector.closeConnection();
     }
 
     @Override
@@ -69,6 +72,7 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
             deleteStmt.executeUpdate();
 
         } catch (SQLException e) {
+            log.error("Exception occurred while deleting the archived data to remote DB " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -77,10 +81,17 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
     public String readDataFromArchivedTable(String tableName) throws SQLException {
         CustomJdbcConnector targetJdbcConnector = new CustomJdbcConnector(targetUrl, target_user, target_password);
 
-        String query = "SELECT * from " + tableName;
-        var result = targetJdbcConnector.executeQuery(query);
-        targetJdbcConnector.closeConnection();
-        return convertResultSetToJson(result).toString();
+        try{
+            String query = "SELECT * from " + tableName;
+            var result = targetJdbcConnector.executeQuery(query);
+
+            return convertResultSetToJson(result).toString();
+        } catch (SQLException e) {
+            log.error("Exception occurred while reading the archived data to remote DB " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally{
+            targetJdbcConnector.closeConnection();
+        }
 
     }
 
@@ -89,11 +100,17 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
         var archivalPolicies = archivalPolicyRepository.findAll();
         ArrayNode jsonNodes = new ObjectMapper().createArrayNode();
         CustomJdbcConnector targetJdbcConnector = new CustomJdbcConnector(targetUrl, target_user, target_password);
-        for (var policy : archivalPolicies){
-            String query = "SELECT * from " + policy.getTableName();
-            var result = targetJdbcConnector.executeQuery(query);
-            jsonNodes.add(convertResultSetToJson(result));
+        try{
+            for (var policy : archivalPolicies){
+                String query = "SELECT * from " + policy.getTableName();
+                var result = targetJdbcConnector.executeQuery(query);
+                jsonNodes.add(convertResultSetToJson(result));
+            }
+        } catch (SQLException e) {
+            log.error("Exception occurred while reading the archived data to remote DB " + e.getMessage());
+            throw new RuntimeException(e);
         }
+
         return jsonNodes.toString();
     }
 

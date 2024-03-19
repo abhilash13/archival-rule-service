@@ -19,15 +19,20 @@ public class ArchiveRunner {
 
     private final IArchiveDataService archiveDataWriteService;
 
-    //@Scheduled(cron = "*/55 * * * * *")
+    @Scheduled(cron = "0 2 * * * * ")
     public void executeArchive() throws SQLException {
         var archivalPolicies = archivalPolicyRepository.findAll();
 
-        for(var archivalPolicy : archivalPolicies){
-            System.out.println("Fetched details from DB " + archivalPolicy.toString());
-            /*var rs = dataReadService.readDataFromDatabase(p);*/
-            archiveDataWriteService.archiveDataToDatabase(dataReadService.readDataFromDatabase(archivalPolicy), archivalPolicy.getTableName());
+        try{
+            for(var archivalPolicy : archivalPolicies){
+                System.out.println("Fetched details from DB " + archivalPolicy.toString());
+                var rs = dataReadService.readDataFromDatabase(archivalPolicy);
+                archiveDataWriteService.archiveDataToDatabase(rs, archivalPolicy.getTableName());
+            }
+        } catch(SQLException e) {
+            System.out.println("Exception has occurred " + e.getMessage());
         }
+
     }
 
 }
