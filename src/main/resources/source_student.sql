@@ -1,0 +1,30 @@
+CREATE TABLE student (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    birth_date  DATE            NOT NULL,
+    first_name  VARCHAR(14)     NOT NULL,
+    last_name   VARCHAR(16)     NOT NULL,
+    gender      ENUM ('M','F')  NOT NULL,
+    created_at   DATE            NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO `student` VALUES (10001,'2000-09-02','Georgi','Facello','M','2023-06-26'),
+                              (10002,'2001-06-02','Bezalel','Simmel','F','2023-11-21'),
+                              (10003,'1999-12-03','Parto','Bamford','M','2023-08-28'),
+                              (10004,'2002-05-01','Chirstian','Koblick','M','2023-12-01'),
+                              (10005,'2000-01-21','Kyoichi','Maliniak','M','2023-09-12'),
+                              (10006,'2001-04-20','Anneke','Preusig','F','2023-06-02'),
+                              (10007,'2003-05-23','Tzvetan','Zielinski','F','2023-02-10'),
+                              (10008,'2000-02-19','Saniya','Kalloufi','M','2023-09-15'),
+                              (10009,'1998-04-19','Sumant','Peac','F','2024-02-18'),
+                              (10010,'1999-06-01','Duangkaew','Piveteau','F','2023-08-24'),
+                              (10011,'2000-11-07','Mary','Sluis','F','2024-01-22'),
+                              (10012,'2000-10-04','Patricio','Bridgland','M','2023-12-18'),
+                              (10013,'2000-06-07','Eberhardt','Terkki','M','2023-10-20'),
+                              (10014,'2001-02-12','Berni','Genin','M','2024-03-11'),
+                              (10015,'2002-08-19','Guoxiang','Nooteboom','M','2023-07-02'),
+                              (10016,'2004-05-02','Kazuhito','Cappelletti','M','2024-01-27'),
+                              (10017,'2000-07-06','Cristinel','Bouloucos','F','2023-08-03'),
+                              (10018,'2002-06-19','Kazuhide','Peha','F','2023-04-03'),
+                              (10019,'2003-01-23','Lillian','Haddadi','M','2023-04-30'),
+                              (10020,'2000-12-24','Mayuko','Warwick','M','2024-01-26')
