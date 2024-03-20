@@ -18,7 +18,9 @@ public class ArchiveDeleteRunner {
     private final IArchiveDataService archiveDataWriteService;
 
     @Scheduled(cron = "0 0 * * * SUN")
+    //@Scheduled(cron = "0 */5 * * * *")
     public void executeDeleteArchiveData() {
+        System.out.println("Executing delete archive scheduler job at " + System.currentTimeMillis());
         var archivalPolicies = archivalPolicyRepository.findAll();
 
         for(var archivalPolicy : archivalPolicies){

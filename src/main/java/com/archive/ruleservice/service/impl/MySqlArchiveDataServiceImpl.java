@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,19 +39,23 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
             ResultSetMetaData resulSetMetaData = rs.getMetaData();
             int columnCount = resulSetMetaData.getColumnCount();
 
+            int count = 0;
             while (rs.next()) {
                 // Bind values for dynamic columns
                 for (int i = 1; i <= columnCount; i++) {
                     insertStmt.setObject(i, rs.getObject(i));
                 }
+                count++;
                 insertStmt.executeUpdate();
             }
 
+            System.out.println("Archived " + count + " rows for table " + tableName);
             System.out.println("Data transferred successfully!");
 
-        } catch (SQLException e) {
-            log.error("Exception occurred while archiving data to remote DB " + e.getMessage());
-            throw new RuntimeException(e);
+        } catch (SQLIntegrityConstraintViolationException e) {
+
+        } catch(Exception e){
+
         } finally {
             targetJdbcConnector.closeConnection();
         }
@@ -67,14 +68,17 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
 
         String query = "Delete from " + tableName + " where created_at < DATE_SUB(NOW(), INTERVAL "
                 + retainArchivedDataForInDays + " DAY)";
+        int count = 0;
         try {
+            System.out.println("Query is " + query);
             PreparedStatement deleteStmt = targetJdbcConnector.getConnection().prepareStatement(query);
-            deleteStmt.executeUpdate();
+            count = deleteStmt.executeUpdate();
 
         } catch (SQLException e) {
             log.error("Exception occurred while deleting the archived data to remote DB " + e.getMessage());
             throw new RuntimeException(e);
         }
+        System.out.println("Deleted " + count + " rows for archived table " + tableName);
     }
 
     @Override
@@ -114,7 +118,7 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
         return jsonNodes.toString();
     }
 
-    private ArrayNode convertResultSetToJson(ResultSet resultSet) throws SQLException {
+    public static  ArrayNode convertResultSetToJson(ResultSet resultSet) throws SQLException {
         ArrayNode jsonArray = new ObjectMapper().createArrayNode();
         ResultSetMetaData metaData = resultSet.getMetaData();
         int columnCount = metaData.getColumnCount();

@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 public class MySqlDataReadService implements IDataReadService {
     @Override
     public ResultSet readDataFromDatabase(ArchivePolicy archivePolicy) {
-        CustomJdbcConnector sourceJdbcConnector = null;
+        CustomJdbcConnector sourceJdbcConnector;
         try{
             sourceJdbcConnector = new CustomJdbcConnector(archivePolicy.getDatabaseURI(),
                     archivePolicy.getUserName(), archivePolicy.getPassword());
