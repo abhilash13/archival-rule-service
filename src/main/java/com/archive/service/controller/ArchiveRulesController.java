@@ -19,7 +19,7 @@ public class ArchiveRulesController {
     private final IArchivePolicyService archiveRuleService;
 
     @PostMapping("/rules")
-    public ResponseEntity<ArchivePolicy> createRule(@RequestBody ArchivePolicyRequest archiveRuleRequest){
+    public ResponseEntity<ArchivePolicy> createRule(@RequestBody ArchivePolicyRequest archiveRuleRequest) throws Exception {
          return new ResponseEntity<>(archiveRuleService.createRule(archiveRuleRequest), HttpStatus.CREATED);
     }
 

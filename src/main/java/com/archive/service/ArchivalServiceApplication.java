@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class ArchivalRuleServiceApplication {
+public class ArchivalServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ArchivalRuleServiceApplication.class, args);
+		SpringApplication.run(ArchivalServiceApplication.class, args);
 	}
 
 }

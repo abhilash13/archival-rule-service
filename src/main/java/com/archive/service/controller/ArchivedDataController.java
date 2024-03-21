@@ -2,6 +2,7 @@ package com.archive.service.controller;
 
 import com.archive.service.model.CustomUserDetails;
 import com.archive.service.service.IArchiveDataService;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class ArchivedDataController {
     @GetMapping("/archivedData/table/{tableName}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<String> fetchArchivedData(@PathVariable String tableName,
-                                                    @AuthenticationPrincipal UserDetails userDetails)
+                                                       @AuthenticationPrincipal UserDetails userDetails)
             throws SQLException {
 
         if(userDetails instanceof CustomUserDetails){

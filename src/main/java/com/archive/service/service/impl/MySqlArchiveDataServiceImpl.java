@@ -105,7 +105,7 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
         ArrayNode jsonNodes = new ObjectMapper().createArrayNode();
         CustomJdbcConnector targetJdbcConnector = new CustomJdbcConnector(targetUrl, target_user, target_password);
         try{
-            for (var policy : archivalPolicies){
+            for (var policy : archivalPolicies) {
                 String query = "SELECT * from " + policy.getTableName();
                 var result = targetJdbcConnector.executeQuery(query);
                 jsonNodes.add(convertResultSetToJson(result));

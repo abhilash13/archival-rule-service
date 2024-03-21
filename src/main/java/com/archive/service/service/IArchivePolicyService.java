@@ -6,7 +6,7 @@ import com.archive.service.model.ArchivePolicyRequest;
 import java.util.List;
 
 public interface IArchivePolicyService {
-    ArchivePolicy createRule(ArchivePolicyRequest archiveRuleRequest);
+    ArchivePolicy createRule(ArchivePolicyRequest archiveRuleRequest) throws Exception;
 
     List<ArchivePolicy> getRules();
 }
