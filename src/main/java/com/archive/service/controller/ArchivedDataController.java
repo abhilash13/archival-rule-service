@@ -24,6 +24,7 @@ public class ArchivedDataController {
     private final IArchiveDataService archiveDataService;
 
     @GetMapping("/archivedData/table/{tableName}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<String> fetchArchivedData(@PathVariable String tableName,
                                                     @AuthenticationPrincipal UserDetails userDetails)
             throws SQLException {
@@ -31,9 +32,9 @@ public class ArchivedDataController {
         if(userDetails instanceof CustomUserDetails){
             CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
             // Check if User is trying to fetch details of table for which they have access
-            if(!customUserDetails.getAuthorities().stream().
+            if(tableName.equals("student") && !customUserDetails.getAuthorities().stream().
                     map(Objects::toString).collect(Collectors.joining(",")).
-                    contains("USER") && tableName.equals("student")){
+                    contains("USER") ){
                 log.error("The current user doe not have required permission to fetch the result");
                 return new ResponseEntity<>("Unauthorised", HttpStatus.UNAUTHORIZED);
             }
