@@ -23,8 +23,11 @@ public class ArchiveDeleteRunner {
 
         for(var archivalPolicy : archivalPolicies){
             log.debug("Fetched details from DB {}", archivalPolicy.toString());
-            archiveDataWriteService.deleteArchiveData(archivalPolicy.getTableName(),
-                    archivalPolicy.getRetainArchivedDataForInDays());
+            for(String table : archivalPolicy.getTableNames()){
+                archiveDataWriteService.deleteArchiveData(table,
+                        archivalPolicy.getRetainArchivedDataForInDays());
+            }
+
         }
     }
 }

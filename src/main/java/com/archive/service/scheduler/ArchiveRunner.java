@@ -32,11 +32,16 @@ public class ArchiveRunner {
 
         try{
             for(var archivalPolicy : archivalPolicies){
-                System.out.println("Fetched details from DB " + archivalPolicy.toString());
+
+                for (String table : archivalPolicy.getTableNames()) {
+
+                System.out.println("Fetched details from DB " + archivalPolicy);
                 String password = passwordSecurity.decrypt(archivalPolicy.getPassword());
                 archivalPolicy.setPassword(password);
-                var rs = dataReadService.readDataFromDatabase(archivalPolicy);
-                archiveDataWriteService.archiveDataToDatabase(rs, archivalPolicy.getTableName());
+                var rs = dataReadService.readDataFromDatabase(archivalPolicy, table);
+                archiveDataWriteService.archiveDataToDatabase(rs, table);
+                }
+
                 // TODO: As a future plan if user provides shouldDelete flag value as true
                 // add logic to delete data from source DB once archival is done.
             }

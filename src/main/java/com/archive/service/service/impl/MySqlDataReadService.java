@@ -12,13 +12,13 @@ import java.sql.ResultSet;
 @Slf4j
 public class MySqlDataReadService implements IDataReadService {
     @Override
-    public ResultSet readDataFromDatabase(ArchivePolicy archivePolicy) {
+    public ResultSet readDataFromDatabase(ArchivePolicy archivePolicy, String table) {
         CustomJdbcConnector sourceJdbcConnector;
         try{
             sourceJdbcConnector = new CustomJdbcConnector(archivePolicy.getDatabaseURI(),
                     archivePolicy.getUserName(), archivePolicy.getPassword());
 
-            String query = "select * from " + archivePolicy.getTableName() + " where created_at < DATE_SUB(NOW(), INTERVAL "
+            String query = "select * from " + table + " where created_at < DATE_SUB(NOW(), INTERVAL "
                     + archivePolicy.getArchiveDataBeforeInDays() + " DAY)";
             return sourceJdbcConnector.executeQuery(query);
         } catch(Exception e) {

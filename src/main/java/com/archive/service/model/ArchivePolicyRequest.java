@@ -14,7 +14,7 @@ public class ArchivePolicyRequest {
     private String userName;
     private String password;
     private Long port;
-    private String tableName;
+    private String tableNames;
     private Long archiveDataBeforeInDays;
     private Long retainArchivedDataForInDays;
 }

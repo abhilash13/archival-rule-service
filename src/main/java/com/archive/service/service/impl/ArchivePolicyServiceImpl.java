@@ -8,6 +8,7 @@ import com.archive.service.util.PasswordSecurity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -38,6 +39,6 @@ public class ArchivePolicyServiceImpl implements IArchivePolicyService {
                 retainArchivedDataForInDays(archiveRuleRequest.getRetainArchivedDataForInDays()).
                 password(passwordSecurity.encrypt(archiveRuleRequest.getPassword())).
                 userName(archiveRuleRequest.getUserName()).
-                tableName(archiveRuleRequest.getTableName()).build();
+                tableNames(Collections.singletonList(archiveRuleRequest.getTableNames())).build();
     }
 }

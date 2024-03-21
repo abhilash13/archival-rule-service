@@ -82,7 +82,7 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
     }
 
     @Override
-    public String readDataFromArchivedTable(String tableName) throws SQLException {
+    public String readDataFromArchivedTable(String tableName) {
         CustomJdbcConnector targetJdbcConnector = new CustomJdbcConnector(targetUrl, target_user, target_password);
 
         try{
@@ -100,15 +100,17 @@ public class MySqlArchiveDataServiceImpl implements IArchiveDataService {
     }
 
     @Override
-    public String readDataFromArchived() throws SQLException {
+    public String readDataFromArchived() {
         var archivalPolicies = archivalPolicyRepository.findAll();
         ArrayNode jsonNodes = new ObjectMapper().createArrayNode();
         CustomJdbcConnector targetJdbcConnector = new CustomJdbcConnector(targetUrl, target_user, target_password);
         try{
             for (var policy : archivalPolicies) {
-                String query = "SELECT * from " + policy.getTableName();
-                var result = targetJdbcConnector.executeQuery(query);
-                jsonNodes.add(convertResultSetToJson(result));
+                for(String table : policy.getTableNames()) {
+                    String query = "SELECT * from " + table;
+                    var result = targetJdbcConnector.executeQuery(query);
+                    jsonNodes.add(convertResultSetToJson(result));
+                }
             }
         } catch (SQLException e) {
             log.error("Exception occurred while reading the archived data to remote DB " + e.getMessage());

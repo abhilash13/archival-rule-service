@@ -1,8 +1,10 @@
 package com.archive.service.entity;
 
+import com.archive.service.util.StringListConverter;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,8 +28,11 @@ public class ArchivePolicy {
     private String userName;
     @Column(nullable=false)
     private String password;
-    @Column(name = "tablename", nullable=false)
-    String tableName;
+
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "tablenames", nullable=false)
+    List<String> tableNames;
+
     @Column(name = "archivedatabeforeindays", nullable=false)
     private Long archiveDataBeforeInDays;
     @Column(name = "retainarchiveddataforindays", nullable=false)

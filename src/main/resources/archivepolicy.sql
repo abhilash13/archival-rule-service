@@ -5,7 +5,7 @@ CREATE TABLE archivalpolicy (
         databaseuri VARCHAR(255) NOT NULL,
         username VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
-        tablename VARCHAR(255) NOT NULL,
+        tablenames VARCHAR(255) NOT NULL,
         archivedatabeforeindays BIGINT NOT NULL,
         retainarchiveddataforindays BIGINT NOT NULL
 );
