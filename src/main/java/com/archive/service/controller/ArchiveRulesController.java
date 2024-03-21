@@ -28,4 +28,6 @@ public class ArchiveRulesController {
         return new ResponseEntity<>(archiveRuleService.getRules(), HttpStatus.OK);
     }
 
+    // TODO: Add update and Delete API
+
 }

@@ -32,4 +32,7 @@ public class ArchivePolicy {
     private Long archiveDataBeforeInDays;
     @Column(name = "retainarchiveddataforindays", nullable=false)
     private Long retainArchivedDataForInDays;
+
+    //TODO: As a future plan add a shouldDelete flag to indicate if service has
+    // permission to delete the original data after retention
 }

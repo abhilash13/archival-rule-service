@@ -37,7 +37,8 @@ public class ArchiveRunner {
                 archivalPolicy.setPassword(password);
                 var rs = dataReadService.readDataFromDatabase(archivalPolicy);
                 archiveDataWriteService.archiveDataToDatabase(rs, archivalPolicy.getTableName());
-
+                // TODO: As a future plan if user provides shouldDelete flag value as true
+                // add logic to delete data from source DB once archival is done.
             }
         } catch(SQLException e) {
             log.debug("Exception has occurred " + e.getMessage());
